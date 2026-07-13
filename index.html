@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ACCÈS RESTREINT — SERVICE ARCHIVES</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #000000;
+      color: #ffffff;
+      font-family: 'Courier New', Courier, monospace;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* CONTENEURS */
+    #screen-mdp,
+    #screen-unlock {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 16px;
+      padding: 40px;
+      max-width: 600px;
+      width: 100%;
+    }
+
+    #screen-unlock {
+      display: none;
+    }
+
+    /* TEXTE TYPEWRITER */
+    .ligne-texte {
+      font-size: 13px;
+      letter-spacing: 2px;
+      color: #ffffff;
+      text-transform: uppercase;
+      overflow: hidden;
+      white-space: nowrap;
+      width: 0;
+      animation: typing 0.5s steps(40) forwards;
+    }
+
+    .dim {
+      color: #444444;
+      font-size: 11px;
+    }
+
+    .rouge {
+      color: #ff3333;
+    }
+
+    /* DÉLAIS D'APPARITION DE CHAQUE LIGNE */
+    .l1  { animation-delay: 0.2s; }
+    .l2  { animation-delay: 0.8s; }
+    .l3  { animation-delay: 1.4s; }
+    .l4  { animation-delay: 2.0s; }
+    .l5  { animation-delay: 2.6s; }
+    .l6  { animation-delay: 3.2s; }
+    .l7  { animation-delay: 3.8s; }
+
+    @keyframes typing {
+      from { width: 0; }
+      to { width: 100%; }
+    }
+
+    /* CURSEUR RECTANGLE */
+    .curseur {
+      display: inline-block;
+      width: 10px;
+      height: 14px;
+      background: #ffffff;
+      vertical-align: middle;
+      animation: clignoter 0.8s step-end infinite;
+    }
+
+    @keyframes clignoter {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    /* SÉPARATEUR */
+    .separateur {
+      width: 100%;
+      height: 1px;
+      background: #222222;
+      margin: 8px 0;
+    }
+
+    /* CHAMP MDP */
+    .mdp-zone {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      opacity: 0;
+      animation: fadeIn 0.5s forwards;
+      animation-delay: 4.4s;
+    }
+
+    .mdp-label {
+      font-size: 10px;
+      letter-spacing: 3px;
+      color: #444444;
+      text-transform: uppercase;
+    }
+
+    .mdp-input-ligne {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    #input-mdp {
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid #333333;
+      color: #ffffff;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 13px;
+      letter-spacing: 4px;
+      width: 220px;
+      padding: 6px 0;
+      outline: none;
+      text-transform: uppercase;
+    }
+
+    #input-mdp:focus {
+      border-bottom-color: #ffffff;
+    }
+
+    .btn-valider {
+      background: transparent;
+      border: none;
+      color: #444444;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: color 0.2s;
+      padding: 0;
+    }
+
+    .btn-valider:hover {
+      color: #ffffff;
+    }
+
+    .erreur {
+      font-size: 10px;
+      letter-spacing: 2px;
+      color: #ff0000;
+      opacity: 0;
+      transition: opacity 0.3s;
+      text-transform: uppercase;
+    }
+
+    .erreur.visible {
+      opacity: 1;
+    }
+
+    /* ÉCRAN DÉVERROUILLÉ */
+    .unlock-ligne {
+      font-size: 13px;
+      letter-spacing: 2px;
+      color: #ffffff;
+      text-transform: uppercase;
+      overflow: hidden;
+      white-space: nowrap;
+      width: 0;
+      animation: typing 0.5s steps(40) forwards;
+    }
+
+    .ul1 { animation-delay: 0.2s; }
+    .ul2 { animation-delay: 0.8s; }
+    .ul3 { animation-delay: 1.4s; }
+    .ul4 { animation-delay: 2.0s; }
+    .ul5 { animation-delay: 2.6s; }
+
+    .acces-ok {
+      color: #00ff00;
+    }
+
+    .btn-telecharger {
+      opacity: 0;
+      animation: fadeIn 0.5s forwards;
+      animation-delay: 3.2s;
+      background: transparent;
+      border: 1px solid #333333;
+      color: #ffffff;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 10px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      padding: 10px 25px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: all 0.3s;
+      margin-top: 10px;
+    }
+
+    .btn-telecharger:hover {
+      border-color: #ffffff;
+      background: #ffffff;
+      color: #000000;
+    }
+
+    .lien-inactif {
+      opacity: 0;
+      animation: fadeIn 0.5s forwards;
+      animation-delay: 3.6s;
+      font-size: 9px;
+      letter-spacing: 2px;
+      color: #222222;
+      text-transform: uppercase;
+      cursor: not-allowed;
+      margin-top: 8px;
+    }
+
+    /* TEXTE QUASI INVISIBLE */
+    .hidden-text {
+      position: fixed;
+      bottom: 8px;
+      left: 8px;
+      font-size: 7px;
+      color: #080808;
+      letter-spacing: 1px;
+      user-select: text;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- ÉCRAN MOT DE PASSE -->
+  <div id="screen-mdp">
+
+    <p class="ligne-texte dim l1">SYSTÈME : ARCHIVES — SERVICE GESTION DIMENSIONNELLE</p>
+    <p class="ligne-texte dim l2">DIMENSION : [INCONNU] — CLASSIFICATION : PRIMORDIALITÉ</p>
+    <div class="separateur"></div>
+    <p class="ligne-texte l3">ACCÈS RESTREINT</p>
+    <p class="ligne-texte dim l4">RÉFÉRENCE : INC-1999</p>
+    <p class="ligne-texte dim l5">STATUT : EN COURS</p>
+    <div class="separateur"></div>
+    <p class="ligne-texte dim l6">IDENTIFICATION REQUISE POUR CONTINUER</p>
+    <p class="ligne-texte dim l7">ENTREZ LE CODE DE SÉCURITÉ CI-DESSOUS <span class="curseur"></span></p>
+
+    <div class="mdp-zone">
+      <div class="mdp-input-ligne">
+        <span style="color:#444;font-size:12px;letter-spacing:2px;">></span>
+        <input
+          type="password"
+          id="input-mdp"
+          autocomplete="off"
+          spellcheck="false"
+          maxlength="20"
+          placeholder="__________"
+        />
+        <button class="btn-valider" onclick="verifierMDP()">[ VALIDER ]</button>
+      </div>
+      <p class="erreur" id="msg-erreur">// ACCÈS REFUSÉ — CODE INVALIDE</p>
+    </div>
+
+  </div>
+
+  <!-- ÉCRAN DÉVERROUILLÉ -->
+  <div id="screen-unlock">
+    <p class="unlock-ligne acces-ok ul1">// ACCÈS ACCORDÉ — NIVEAU 1</p>
+    <p class="unlock-ligne dim ul2">RÉFÉRENCE : INC-1999</p>
+    <div class="separateur"></div>
+    <p class="unlock-ligne dim ul3">RAPPORT D'INCIDENT DISPONIBLE</p>
+    <p class="unlock-ligne dim ul4">TÉLÉCHARGEZ LE FICHIER POUR ACCÉDER AUX DONNÉES <span class="curseur"></span></p>
+    <div class="separateur"></div>
+    <a class="btn-telecharger ul5" href="LIEN_GOOGLE_DRIVE_ICI" target="_blank">
+      [ TÉLÉCHARGER LE RAPPORT ]
+    </a>
+    <p class="lien-inactif">// RAPPORT COMPLET — NIVEAU D'AUTORISATION INSUFFISANT</p>
+  </div>
+
+  <!-- TEXTE CACHÉ -->
+  <p class="hidden-text">INC-1999 — Gérard — Service Archives — Ce n'est pas la première fois.</p>
+
+  <script>
+    document.getElementById('input-mdp').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') verifierMDP();
+    });
+
+    function verifierMDP() {
+      const input = document.getElementById('input-mdp').value.toUpperCase().trim();
+      const erreur = document.getElementById('msg-erreur');
+
+      if (input === 'PROMETHEUS') {
+        document.getElementById('screen-mdp').style.display = 'none';
+        const unlock = document.getElementById('screen-unlock');
+        unlock.style.display = 'flex';
+      } else {
+        erreur.classList.add('visible');
+        document.getElementById('input-mdp').value = '';
+        setTimeout(() => erreur.classList.remove('visible'), 2000);
+      }
+    }
+  </script>
+
+</body>
+</html>
